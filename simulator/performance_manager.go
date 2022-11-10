@@ -17,6 +17,7 @@ limitations under the License.
 package simulator
 
 import (
+	"fmt"
 	"math/rand"
 	"strconv"
 	"strings"
@@ -65,7 +66,7 @@ func (m *PerformanceManager) init(r *Registry) {
 		m.metricData = esx.MetricData
 	} else {
 		m.PerfCounter = vpx.PerfCounter
-		m.historicalInterval = vpx.HistoricalInterval
+		m.historicalInterval = vpx.HistoricalInterval //kb <== we use this one
 		m.hostMetrics = vpx.HostMetrics
 		m.vmMetrics = vpx.VmMetrics
 		m.rpMetrics = vpx.ResourcePoolMetrics
@@ -96,6 +97,7 @@ func (p *PerformanceManager) QueryPerfProviderSummary(ctx *Context, req *types.Q
 
 	// The entity must exist
 	if ctx.Map.Get(req.Entity) == nil {
+	fmt.Println("QueryPerfProviderSummary(", req.Entity,") ==> not found")
 		body.Fault_ = Fault("", &types.InvalidArgument{
 			InvalidProperty: "Entity",
 		})
@@ -180,6 +182,7 @@ func (p *PerformanceManager) QueryPerf(ctx *Context, req *types.QueryPerf) soap.
 	for i, qs := range req.QuerySpec {
 		// Get metric data for this entity type
 		metricData, ok := p.metricData[qs.Entity.Type]
+		fmt.Println("QueryPerf(", qs.Entity.Type,") ==> ", ok)
 		if !ok {
 			body.Fault_ = Fault("", &types.InvalidArgument{
 				InvalidProperty: "Entity",

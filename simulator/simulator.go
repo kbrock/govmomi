@@ -470,10 +470,6 @@ func (s *Service) ServeSDK(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if Trace {
-		fmt.Fprintf(TraceFile, "Request: %s\n", string(body))
-	}
-
 	ctx := &Context{
 		req: r,
 		res: w,
@@ -488,11 +484,16 @@ func (s *Service) ServeSDK(w http.ResponseWriter, r *http.Request) {
 	var soapBody interface{}
 
 	method, err := UnmarshalBody(ctx.Map.typeFunc, body)
+
+	if Trace {
+		fmt.Fprintf(TraceFile, "===\nRequest (%s):\n===\n%s\n", method.Name, string(body)) //kb
+	}
 	if err != nil {
 		res = serverFault(err.Error())
 	} else {
 		ctx.Header = method.Header
 		if method.Name == "Fetch" {
+        	//fmt.Fprintf(TraceFile, "Fetch") //kb
 			// Redirect any Fetch method calls to the PropertyCollector singleton
 			method.This = ctx.Map.content().PropertyCollector
 		}
@@ -542,7 +543,7 @@ func (s *Service) ServeSDK(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if Trace {
-		fmt.Fprintf(TraceFile, "Response: %s\n", out.String())
+		fmt.Fprintf(TraceFile, "===\nResponse:\n===\n%s\n", out.String()) //kb
 	}
 
 	_, _ = w.Write(out.Bytes())

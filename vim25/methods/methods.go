@@ -10831,6 +10831,8 @@ type QueryPerfCounterBody struct {
 
 func (b *QueryPerfCounterBody) Fault() *soap.Fault { return b.Fault_ }
 
+//kb no QueryPerfInterval / Query
+
 func QueryPerfCounter(ctx context.Context, r soap.RoundTripper, req *types.QueryPerfCounter) (*types.QueryPerfCounterResponse, error) {
 	var reqBody, resBody QueryPerfCounterBody
 

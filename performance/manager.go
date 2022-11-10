@@ -102,6 +102,8 @@ func (l IntervalList) Enabled() map[int32][]string {
 func (m *Manager) HistoricalInterval(ctx context.Context) (IntervalList, error) {
 	var pm mo.PerformanceManager
 
+	fmt.Println("===\nperformance/manager/HistoricalInterval\n")
+
 	err := m.Properties(ctx, m.Reference(), []string{"historicalInterval"}, &pm)
 	if err != nil {
 		return nil, err
